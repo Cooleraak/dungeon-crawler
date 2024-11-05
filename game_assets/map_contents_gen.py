@@ -1,22 +1,27 @@
 import random
 from enemy_assets import *
+from game_logic import *
 
 class room_setup():
     def __init__(self, node): #add types to enemy, player, chest
         self.chest_contents_preview = []   
         self.room = node
-        self.room_tier = self.set_room_tier()
+        self.room_tier = 1#self.set_room_tier()
 
     def enemy_generation(self):
         enemy_list = enemy_tiers()
-        if self.room_tier == 1: self.room.contents['enemy'] = self.enemy_char(random.choice(enemy_list.basic_enemy_list))
-        elif self.room_tier == 3: self.room.contents['enemy'] = self.enemy_char(random.choice(enemy_list.elite_enemy_list))
-        elif self.room_tier == 4: self.room.contents['enemy'] = self.enemy_char(random.choice(enemy_list.boss_enemy_list))
-        else: possible_enemies = self.room.contents['enemy'] = None
+        if self.room_tier == 1: return self.enemy_char(random.choice(enemy_list.basic_enemy_list))
+        elif self.room_tier == 3: return self.enemy_char(random.choice(enemy_list.elite_enemy_list))
+        elif self.room_tier == 4: return self.enemy_char(random.choice(enemy_list.boss_enemy_list))
+        else: return None
 
     def loot_generation(self):
-        pass
-    
+        if self.room_tier == 0: return 0
+        elif self.room_tier == 1: return 1 
+        elif self.room_tier == 2: return 2
+        elif self.room_tier == 3: return 3
+        else: return 4
+
     def set_room_tier(self):
         room = self.room.node_type
         if room == 'nothing': return 0
