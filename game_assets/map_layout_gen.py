@@ -102,9 +102,3 @@ class traverse_tree(): #maybe move this to another module
         
         else:
             print('cannot go there\n')
-        
-tree = game_map_generation().generate_map()
-move = traverse_tree(tree)
-while True:
-    
-    move.choose_travel_destination()
