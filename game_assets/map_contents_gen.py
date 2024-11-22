@@ -1,12 +1,12 @@
 import random
-from enemy_assets import *
-from game_logic import *
+from game_assets.enemy_assets import *
 
 class room_setup():
-    def __init__(self, node): #add types to enemy, player, chest
+    def __init__(self, node):
+        #add types to enemy, player, chest
         self.chest_contents_preview = []   
         self.room = node
-        self.room_tier = 1#self.set_room_tier()
+        self.room_tier = self.set_room_tier()
 
     def enemy_generation(self):
         enemy_list = enemy_tiers()
@@ -16,11 +16,23 @@ class room_setup():
         else: return None
 
     def loot_generation(self):
-        if self.room_tier == 0: return 0
-        elif self.room_tier == 1: return 1 
-        elif self.room_tier == 2: return 2
-        elif self.room_tier == 3: return 3
-        else: return 4
+        if self.room_tier == 0:
+            chest = self.chest(0)
+
+        elif self.room_tier == 1: 
+            chest = self.chest(1)
+
+        elif self.room_tier == 2:
+            chest = self.chest(2)
+
+        elif self.room_tier == 3: 
+            chest = self.chest(3)
+
+        else:
+            chest = self.chest(4)
+
+        chest.generate_chest_loot()
+        return chest
 
     def set_room_tier(self):
         room = self.room.node_type
@@ -47,11 +59,12 @@ class room_setup():
                 self.contents_preview.pop(rand_loot_index)
             self.chest_loot = loot
 
-        def reset_available_loot(self): #adds items instead of reseting to increase the odds of rare items
+        def reset_available_loot(self): 
+            #adds items instead of reseting to increase the odds of rare items
             rarity = {'common':10, 'rare' : 4, 'epic' : 1}
-            self.contents_preview+=['10hp' for _ in range(rarity['common'])] + [
-                                    '50hp' for _ in range(rarity['rare'])] + [
-                                    'pt' for _ in range(rarity['epic'])]
+            self.contents_preview+=['050potion' for _ in range(rarity['common'])] + [
+                                    '100potion' for _ in range(rarity['rare'])] + [
+                                    '500potion' for _ in range(rarity['epic'])]
 
     class enemy_char():
         type = 'ENEMY'
