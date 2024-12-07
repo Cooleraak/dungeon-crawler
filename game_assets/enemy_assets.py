@@ -7,53 +7,52 @@ class enemy_tiers():
 class enemy_action_properties():
 	def __init__(self):
 		self.enemy_actions = {
-			'anaconda':['teeth'],
-			'crab':['claws'],
-			'cow':('teeth','weight'),
+			'anaconda':['teeth'], #done
+			'crab':['claws'], #done
+			'cow':['teeth','weight'],
 			'crow':['claws'],
-			'demon_small':('claws','teeth','fire'),
-			'goblin':('teeth','claws'),
-			'bear':('teeth','claws','weight'),
-			'demon_big':('claws','fire_big'),
+			'demon_small':['claws','teeth','fire'],
+			'goblin':['teeth','claws'], #done
+			'bear':['teeth','claws','weight'],
+			'demon_big':['claws','fire_big'],
 			'skeleton':['punch'],
 			'angel':['fire'],
 			'spider':['teeth'],
 			'ouroboros':['teeth'],
-			'dragon':('teeth','claws','fire_big','weight'),
-			'ophanim':('weight','fire_big'),
-			'devil':('claws','fire_big'),
+			'dragon':['teeth','claws','fire_big','weight'],
+			'ophanim':['weight','fire_big'], #done
+			'devil':['claws','fire_big'],
 			}
-
 		self.enemy_passive_actions = {
 			'anaconda':['poison'],
 			'crow':['elusive'],
 			'skeleton':['regenerative'],
-			'angel':('regenerative','elusive'),
-			'spider':('poison','elusive'),
-			'ouroboros':('regenerative','poison'),
+			'angel':['regenerative','elusive'],
+			'spider':['poison','elusive'],
+			'ouroboros':['regenerative','poison'],
 			'ophanim':['elusive'],
 			'devil':['summoner_devil'],
 			}
 
 class enemy_stat_properties():
-	def __init__(self):
+	def __init__(self, level):
 		# 'enemy_name' : (hp, dmg_multiplier),
 		self.enemy_stats = {
-			'anaconda':[1000, 5],
-			'crab':[500, 6],
-			'cow':[1500, 3],
-			'crow':[300, 6],
-			'demon_small':[700, 6],
-			'goblin':[700, 5],
-			'bear':[1500, 8],
-			'demon_big':[1200, 9],
-			'skeleton':[700, 9],
-			'angel':[800, 8],
-			'spider':[900, 8],
-			'ouroboros':[5000, 11],
-			'dragon':[5000, 11],
-			'ophanim':[3000, 12],
-			'devil':[3000, 12],
+			'anaconda':[1500*(level+1)/level, 5*(level)],
+			'crab':[1000*(level+1)/level, 6*(level)],
+			'cow':[2000*(level+1)/level, 3*(level)],
+			'crow':[1500*(level+1)/level, 6*(level)],
+			'demon_small':[1700*(level+1)/level, 6*(level)],
+			'goblin':[1000*(level+1)/level, 5*(level)],
+			'bear':[3000*(level+1)/level, 8*(level)],
+			'demon_big':[2500*(level+1)/level, 9*(level)],
+			'skeleton':[1500*(level+1)/level, 9*(level)],
+			'angel':[1600*(level+1)/level, 8*(level)],
+			'spider':[1700*(level+1)/level, 8*(level)],
+			'ouroboros':[5000*(level+1)/level, 11*(level)],
+			'dragon':[5000*(level+1)/level, 13*(level)],
+			'ophanim':[4000*(level+1)/level, 12*(level)],
+			'devil':[4000*(level+1)/level, 12*(level)],
 			}
 
 class enemy_attacks():
@@ -63,14 +62,14 @@ class enemy_attacks():
 			'claws':11,
 			'teeth':12,
 			'fire':13,
-			'weight':14,
+			'weight':10,
 			'punch':10,
-			'fire_big':15,
+			'fire_big':20,
 		#misc
 			'summoner_devil':3,
 			
 		# 'passive' : potency
-			'regenerative':3,
+			'regenerative':15,
 			'elusive':2,
 			'poison':1,
 			}
