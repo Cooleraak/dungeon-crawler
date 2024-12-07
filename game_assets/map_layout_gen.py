@@ -1,7 +1,10 @@
 import random
-import enemy_assets
-import game_logic
-import map_contents_gen
+from game_assets.enemy_assets import *
+from game_assets.game_logic import *
+from game_assets.map_contents_gen import *
+from game_assets.player import *
+
+ #REMAKE TO DYNAMIC CREATION -> only create next set of children after entering their parent
 
 class game_map_generation():
     #generates bin tree and attaches property to each node
@@ -19,18 +22,25 @@ class game_map_generation():
         self.MAX_DEPTH = 5
         self.root = None 
         self.exploration_goal = goal
+        self.boss_spawned = False
+        self.enemy_count = 0
+        self.total_room_count = 0
+        self.explored_room_count = 0
 
-    def generate_map(self): #REMAKE TO DYNAMIC CREATION -> only create next set of children after entering their parent
+    def generate_map(self):
+        #initiates generation and returns first node
         if self.MAX_DEPTH<1 : return None
         self.root = self.generate_node(1,1)
         return self.root
 
     def generate_node(self, curr_depth, node_data, parent = None):
-        if curr_depth > self.MAX_DEPTH : return None
+        if curr_depth > self.MAX_DEPTH : 
+            return None
 
         node_type = self.choose_node_type(curr_depth)
-        if node_type == 'wall': return None
-        
+        if node_type == 'wall': 
+            return None
+        self.total_room_count += 1
         node = self.Node(node_data, node_type, parent)
         node_data_left = node_data*2
         node_data_right = 1 + node_data*2
@@ -40,65 +50,25 @@ class game_map_generation():
         return node
 
     def choose_node_type(self, curr_depth):
-        if curr_depth == 1: return 'entrance'
-        if curr_depth == self.MAX_DEPTH and self.exploration_goal == 'boss': 
+        #attaches room type to room based on chance
+        if curr_depth == 1: 
+            return 'entrance'
+        if self.boss_spawned:
+            return 'wall'
+        if curr_depth == self.MAX_DEPTH and self.exploration_goal == 'boss' and not self.boss_spawned: 
             self.boss_spawned = True
             return 'boss'
+        
         #creates artificial room rarity
         node_type_list = (
     ['basic_enemy' for _ in range(15)] +
     ['elite_enemy' for _ in range(5)] +
     ['reward' for _ in range(5)] +
     ['nothing' for _ in range(14)] +
-    ['wall' for _ in range(3 if curr_depth>3 else 0)]
+    ['wall' for _ in range(3 if (curr_depth>3 and self.exploration_goal!='boss') else 0)]
                             )
         node_type = random.choice(node_type_list)
+        if node_type in ['basic_enemy', 'elite_enemy']: 
+            self.enemy_count += 1
+        
         return node_type
-
-class traverse_tree(): #maybe move this to another module
-    def __init__(self, bin_tree_root):
-        self.root = bin_tree_root
-        self.choose_travel_destination()
-
-    def go_left(self):
-        self.root = self.root.child_left
-        
-    def go_right(self):
-        self.root = self.root.child_right
-        
-    def go_back(self):
-        self.root = self.root.parent
-
-    def choose_travel_destination(self):
-        left_door = 'wall' if self.root.child_left==None else self.root.child_left.node_type
-        right_door = 'wall' if self.root.child_right==None else self.root.child_right.node_type
-        print(f'you are in room {self.root.data}, it is a {self.root.node_type} room')
-        
-        if self.root.node_type not in ['nothing', 'reward', 'entrance']:
-            self.root.contents[0]=map_contents_gen.room_setup(self.root).enemy_generation()
-            enemy = map_contents_gen.room_setup(self.root).enemy_generation()
-            print(f'''You have encountered a wild {self.root.contents[0].name}.\n Prepare for battle!''')
-            print(enemy.name)
-            game_logic.encounter_logic(enemy, self.root.contents[0]).start_battle()
-        
-
-        print(f'in front of you are {left_door} room and {right_door} room')
-        if self.root.data != 1: self.root.node_type = "nothing"
-        
-        destination_choice = input('L : R : B : Q\n')
-        
-        if destination_choice == 'L' and self.root.child_left != None:
-            self.go_left()
-
-        elif destination_choice == 'R' and self.root.child_right != None:
-            self.go_right()
-        
-        elif destination_choice == 'B' and self.root.parent != None:
-            self.go_back()
-
-        elif destination_choice == 'Q':
-            print('goodbye\n')
-            exit()
-        
-        else:
-            print('cannot go there\n')
