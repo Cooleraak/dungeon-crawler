@@ -1,37 +1,34 @@
 import random
 from game_assets.enemy_assets import *
+from game_assets.player import load_data as load
 
 class room_setup():
     def __init__(self, node):
-        #add types to enemy, player, chest
-        self.chest_contents_preview = []   
+        #add tiers, enemy, chest to rooms  
         self.room = node
         self.room_tier = self.set_room_tier()
 
     def enemy_generation(self):
         enemy_list = enemy_tiers()
-        if self.room_tier == 1: return self.enemy_char(random.choice(enemy_list.basic_enemy_list))
+        if self.room_tier == 1 or self.room_tier == 0: return self.enemy_char(random.choice(enemy_list.basic_enemy_list))
         elif self.room_tier == 3: return self.enemy_char(random.choice(enemy_list.elite_enemy_list))
         elif self.room_tier == 4: return self.enemy_char(random.choice(enemy_list.boss_enemy_list))
-        else: return None
 
     def loot_generation(self):
         if self.room_tier == 0:
-            chest = self.chest(0)
-
-        elif self.room_tier == 1: 
             chest = self.chest(1)
 
-        elif self.room_tier == 2:
+        elif self.room_tier == 1: 
             chest = self.chest(2)
 
-        elif self.room_tier == 3: 
+        elif self.room_tier == 2:
             chest = self.chest(3)
 
-        else:
+        elif self.room_tier == 3: 
             chest = self.chest(4)
 
-        chest.generate_chest_loot()
+        else:
+            chest = self.chest(5)
         return chest
 
     def set_room_tier(self):
@@ -47,31 +44,19 @@ class room_setup():
         type = 'CHEST'
         def __init__(self, room_type):
             self.chest_tier = room_type
-            self.chest_loot=[]
-            self.contents_preview = []
-    
-        def generate_chest_loot(self):
-            loot = ['']*self.chest_tier 
-            if len(self.contents_preview)<3: self.reset_available_loot()
-            for i in range(self.chest_tier):
-                rand_loot_index = random.randint(0,len(self.contents_preview)-1)
-                loot[i] = self.contents_preview[rand_loot_index]
-                self.contents_preview.pop(rand_loot_index)
-            self.chest_loot = loot
-
-        def reset_available_loot(self): 
-            #adds items instead of reseting to increase the odds of rare items
-            rarity = {'common':10, 'rare' : 4, 'epic' : 1}
-            self.contents_preview+=['050potion' for _ in range(rarity['common'])] + [
-                                    '100potion' for _ in range(rarity['rare'])] + [
-                                    '500potion' for _ in range(rarity['epic'])]
+            self.chest_loot= room_type
+            
 
     class enemy_char():
         type = 'ENEMY'
         def __init__(self, enemy_name):
+            stats = enemy_stat_properties(load().get_level())
+            actions = enemy_action_properties()
             self.name = enemy_name
-            self.hp = enemy_stat_properties().enemy_stats[enemy_name][0]
-            self.dmg_multiplier = enemy_stat_properties().enemy_stats[enemy_name][1]
-            self.actions = enemy_action_properties().enemy_actions[enemy_name]
-            try: self.passives = enemy_action_properties().enemy_passive_actions[enemy_name]
+            self.hp = stats.enemy_stats[enemy_name][0]
+            self.max_hp = self.hp
+            self.dmg_multiplier = stats.enemy_stats[enemy_name][1]
+            self.mp = 100
+            self.actions = ['pass'] + actions.enemy_actions[enemy_name]
+            try: self.passives = actions.enemy_passive_actions[enemy_name]
             except: self.passives = []
