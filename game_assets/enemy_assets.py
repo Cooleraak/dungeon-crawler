@@ -7,20 +7,20 @@ class enemy_tiers():
 class enemy_action_properties():
 	def __init__(self):
 		self.enemy_actions = {
-			'anaconda':['teeth'], #done
-			'crab':['claws'], #done
-			'cow':['teeth','weight'], #done
-			'crow':['claws'], #done
-			'demon_small':['claws','teeth','fire'], #done
-			'goblin':['claws','teeth'], #done
-			'bear':['claws','teeth','weight'], #done
-			'demon_big':['claws','fire_big'], #done
-			'skeleton':['punch'], #done
-			'angel':['fire'], #done
-			'spider':['teeth'], #done
+			'anaconda':['teeth'], 
+			'crab':['claws'], 
+			'cow':['teeth','weight'], 
+			'crow':['claws'], 
+			'demon_small':['claws','teeth','fire'], 
+			'goblin':['claws','teeth'], 
+			'bear':['claws','teeth','weight'],
+			'demon_big':['claws','fire_big'], 
+			'skeleton':['punch'],
+			'angel':['fire'], 
+			'spider':['teeth'], 
 			'ouroboros':['teeth'],
-			'dragon':['claws','teeth','fire_big','weight'], #done
-			'ophanim':['weight','fire_big'], #done
+			'dragon':['claws','teeth','fire_big','weight'], 
+			'ophanim':['weight','fire_big'], 
 			}
 		self.enemy_passive_actions = {
 			'anaconda':['poison'],
@@ -54,7 +54,7 @@ class enemy_stat_properties():
 
 class enemy_attacks():
 	def __init__(self): 
-		# 'move' : (dmg_raw)
+		# 'move' : dmg_raw
 		self.attacks_and_skills = {
 			'claws':11,
 			'teeth':12,

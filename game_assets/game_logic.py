@@ -47,7 +47,6 @@ class exploration_logic():
                 print('goal complete!')
                 exit()
                 return True
-        print('unfinished business')
         return False
 
     def combat_end(self,node,player):
@@ -77,7 +76,6 @@ class encounter_logic():
         if self.check_for_EOC():
             return [False, self.enemy_char, self.player_char]
         return [True, self.enemy_char, self.player_char]
-
 
     def make_move(self, actor, move):
         if actor.type == 'PLAYER':
@@ -129,10 +127,8 @@ class encounter_logic():
         enemy_copy = deepcopy(self.enemy_char)
         best_score = -100
         best_move = 'pass'
-
         for move in self.enemy_char.actions:
             self.make_move(self.enemy_char, move)
-            print(f'{move} player hp,mp: {self.player_char.hp, self.player_char.mp}:::: enemy {self.enemy_char.hp, self.enemy_char.mp}')
             score = self.minimax(self.MAX_MINIMAX_DEPTH, False, first_action_of_round)
             self.player_char.__dict__ = deepcopy(player_copy.__dict__)
             self.enemy_char.__dict__ = deepcopy(enemy_copy.__dict__)
@@ -183,7 +179,6 @@ class encounter_logic():
                 if score <= min_score:
                     min_score = score
             return min_score
-
 
     def calculate_score(self):
         if self.enemy_char.mp < 0:

@@ -149,7 +149,10 @@ class game():
             running = True
             destination = None
             while running:
-
+                print('----------------------------------')
+                print('explored',self.tree.explored_room_count, ':', 'total',self.tree.total_room_count)
+                print('needed enemies ',self.tree.enemy_count)
+                print('----------------------------------')
                 #bg image load
                 self.screen.blit(self.background_image, (0, 0))
     
@@ -210,10 +213,7 @@ class game():
                 if self.root.node_type == 'boss':
                     self.enemy_count = -1
                 self.logic.check_for_EOE(self.tree, player_char)
-            print('----------------------------------')
-            print(self.tree.explored_room_count, ':', self.tree.total_room_count)
-            print(self.tree.enemy_count)
-            print('----------------------------------')
+            
             
             if self.root.node_type == 'nothing':
                 choices = ['nothing', 'enemy', 'reward']

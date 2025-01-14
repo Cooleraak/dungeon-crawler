@@ -4,7 +4,6 @@ from game_assets.game_logic import *
 from game_assets.map_contents_gen import *
 from game_assets.player import *
 
- #REMAKE TO DYNAMIC CREATION -> only create next set of children after entering their parent
 
 class game_map_generation():
     #generates bin tree and attaches property to each node
@@ -49,7 +48,6 @@ class game_map_generation():
         if node_type == 'wall': 
             return None
         
-        
         node = self.Node(node_data, node_type, parent)
         node.contents[2] = self.choose_door_type(node_type)
         if node_type == 'portal':
@@ -61,7 +59,6 @@ class game_map_generation():
         node_data_right = 1 + node_data*2
 
         node.child_left = self.generate_node(curr_depth + 1, node_data_left, node)
-        
         node.child_right = self.generate_node(curr_depth + 1, node_data_right, node)
         self.total_room_count += 1
         if node_type in ['basic_enemy', 'elite_enemy']: 
@@ -77,8 +74,7 @@ class game_map_generation():
         if curr_depth == self.MAX_DEPTH and self.exploration_goal == 'boss' and not self.boss_spawned: 
             self.boss_spawned = True
             return 'boss'
-        
-        #creates artificial room rarity
+    #creates artificial room rarity
         node_type_list = (
     ['basic_enemy' for _ in range(15)] +
     ['elite_enemy' for _ in range(5)] +
@@ -87,8 +83,6 @@ class game_map_generation():
     ['wall' for _ in range(3 if (curr_depth>3 and self.exploration_goal!='boss') else 0)]
                             )
         node_type = random.choice(node_type_list)
-        
-        
         if node_type == 'wall' and self.portal_generated==False: 
             node_type = random.choice(['wall' for _ in range(9)]+['portal'])
             self.portal_generated = True
@@ -117,7 +111,6 @@ class game_map_generation():
                 if right.node_type == 'portal':
                     portal = [curr, 'right']
 
-
             if portal != None:
                 break
 
@@ -127,7 +120,6 @@ class game_map_generation():
         stack = [self.root]
         while len(stack)>0:
             curr = stack.pop()
-            
             if curr.node_type == 'reward':
                 reward = curr
                 reward.contents[2] = 'portal'
@@ -140,13 +132,9 @@ class game_map_generation():
             if right != None:
                 stack.append(right)
             
-
         if portal[1] == 'left':
             portal[0].child_left = None
             portal[0].child_left = reward
         else:
             portal[0].child_right = None
             portal[0].child_right = reward
-
-
-

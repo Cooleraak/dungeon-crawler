@@ -5,7 +5,7 @@ class player():
         self.name = "player"
         self.hp = 550*level
         self.max_hp = 550*level
-        self.dmg_multiplier = 700*level
+        self.dmg_multiplier = 7*level
         self.mp = 100
         self.actions = ['pass'] + moveset 
         self.passives = passives
