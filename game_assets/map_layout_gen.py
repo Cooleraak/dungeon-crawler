@@ -19,7 +19,12 @@ class game_map_generation():
             self.contents = ['enemy','loot', 'door']
              
     def __init__(self, goal=None):
-        self.MAX_DEPTH = 5
+        if goal == 'explore':
+            self.MAX_DEPTH = random.randint(5,6)
+        elif goal == 'execute':
+            self.MAX_DEPTH = random.randint(4,6)
+        else:
+            self.MAX_DEPTH = 4
         self.root = None 
         self.exploration_goal = goal
         self.boss_spawned = False
@@ -59,6 +64,8 @@ class game_map_generation():
         
         node.child_right = self.generate_node(curr_depth + 1, node_data_right, node)
         self.total_room_count += 1
+        if node_type in ['basic_enemy', 'elite_enemy']: 
+            self.enemy_count += 1
         return node
 
     def choose_node_type(self, curr_depth):
@@ -80,8 +87,7 @@ class game_map_generation():
     ['wall' for _ in range(3 if (curr_depth>3 and self.exploration_goal!='boss') else 0)]
                             )
         node_type = random.choice(node_type_list)
-        if node_type in ['basic_enemy', 'elite_enemy']: 
-            self.enemy_count += 1
+        
         
         if node_type == 'wall' and self.portal_generated==False: 
             node_type = random.choice(['wall' for _ in range(9)]+['portal'])

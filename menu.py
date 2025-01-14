@@ -12,7 +12,7 @@ class menu():
         pygame.display.set_caption('dungeon crawler menu')
         background_image = pygame.image.load('game_assets/visual_assets/basic_room_sprite.png')
             # Scale the image to fit the window size
-        background_image = pygame.transform.scale(background_image, (width, height))
+        background_image = pygame.transform.scale(background_image, (width, height)) 
         screen.blit(background_image, (10, 10))
         buttons = [button(100,200,'NEW_GAME'), button(350,200,'LOAD'),  button(600,200,'QUIT')]
         running = True

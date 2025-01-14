@@ -16,19 +16,15 @@ class room_setup():
 
     def loot_generation(self):
         if self.room_tier == 0:
-            chest = self.chest(1)
-
+            chest = 1
         elif self.room_tier == 1: 
-            chest = self.chest(2)
-
+            chest = 2
         elif self.room_tier == 2:
-            chest = self.chest(3)
-
+            chest = 3
         elif self.room_tier == 3: 
-            chest = self.chest(4)
-
+            chest = 4
         else:
-            chest = self.chest(5)
+            chest = 5
         return chest
 
     def set_room_tier(self):
@@ -38,14 +34,6 @@ class room_setup():
         elif room == 'reward': return 2
         elif room == 'elite_enemy': return 3
         else: return 4
-
-
-    class chest():
-        type = 'CHEST'
-        def __init__(self, room_type):
-            self.chest_tier = room_type
-            self.chest_loot= room_type
-            
 
     class enemy_char():
         type = 'ENEMY'

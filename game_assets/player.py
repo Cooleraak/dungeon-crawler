@@ -5,7 +5,7 @@ class player():
         self.name = "player"
         self.hp = 550*level
         self.max_hp = 550*level
-        self.dmg_multiplier = 30*level
+        self.dmg_multiplier = 700*level
         self.mp = 100
         self.actions = ['pass'] + moveset 
         self.passives = passives
@@ -15,12 +15,13 @@ class player():
 
     def update_xp(self):
         self.curr_xp += 20
-        if self.curr_xp>= self.curr_max_xp:
+        if self.curr_xp >= self.curr_max_xp:
             self.level += 1 if self.level<6 else 0
             self.curr_xp = 0
             self.curr_max_xp = 120*self.level
-            self.actions =  construct_player_data().curr_moveset(self.level)
-            self.passives = construct_player_data().curr_passives(self.level)
+            if self.level <= 6:
+                self.actions =  construct_player_data().curr_moveset(self.level)
+                self.passives = construct_player_data().curr_passives(self.level)
 
 
 class save_data():

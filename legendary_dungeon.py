@@ -36,9 +36,10 @@ class button():
 class game():
     def __init__(self, start, player):
         if start:
-            goal = exploration_logic().set_completion_goal()
-            print(f'your goal is: {goal}')
-            tree = game_map_generation(goal[0])
+            self.logic = exploration_logic()
+            self.logic.set_completion_goal()
+            print(f'your goal is: {self.logic.goal}')
+            tree = game_map_generation(self.logic.goal[0])
             tree.generate_map()
 
             pygame.init()
@@ -87,7 +88,7 @@ class game():
                                         running = False
                                     elif butt.text == 'ITEM':
                                         if player_char.inventory > 0:
-                                            player_char = encounter_logic(player_char, self.root.contents[0]).make_move(player_char, 'item', False)
+                                            player_char = encounter_logic(player_char, self.root.contents[0]).make_move(player_char, 'item')
                                             player_char.inventory -= 1
                                             self.screen.blit(self.font.render(f'HP: {player_char.hp} - ITEM: {player_char.inventory} - MP: {player_char.mp}' , True, 'white'), (0,760))
                                             pygame.display.flip()
@@ -109,7 +110,7 @@ class game():
                     enemy_image = pygame.image.load(f'game_assets/visual_assets/goblin_sprite.png').convert_alpha()
                 enemy_image = pygame.transform.scale(enemy_image, (300, 300))
                 self.screen.blit(enemy_image, (280, 300))
-                self.screen.blit(enemy_stats, (280, 350))
+                self.screen.blit(enemy_stats, (280, 270))
                 self.screen.blit(self.font.render(f'HP: {player_char.hp} - ITEM: {player_char.inventory} - MP: {player_char.mp}' , True, 'white'), (0,760))
                 pygame.display.flip()
             battle = encounter_logic(player_char, self.root.contents[0]).start_battle(move)
@@ -121,6 +122,7 @@ class game():
         player_char = self.player
         main_loop = True
         while main_loop:
+            self.logic.check_for_EOE(self.tree, player_char)
             if self.root.child_left != None:
                 if self.root.child_left.parent == self.root:
                     if self.root.child_left.contents[2]!='nothing':
@@ -203,10 +205,15 @@ class game():
                 self.root.contents[1]=room_setup(self.root).loot_generation()
                 
                 self.encounter_on_screen_load(player_char)
-                exploration_logic().combat_end(self.root, player_char)
+                self.logic.combat_end(self.root, player_char)
                 self.tree.enemy_count -= 1
                 if self.root.node_type == 'boss':
                     self.enemy_count = -1
+                self.logic.check_for_EOE(self.tree, player_char)
+            print('----------------------------------')
+            print(self.tree.explored_room_count, ':', self.tree.total_room_count)
+            print(self.tree.enemy_count)
+            print('----------------------------------')
             
             if self.root.node_type == 'nothing':
                 choices = ['nothing', 'enemy', 'reward']
@@ -214,14 +221,18 @@ class game():
                 if choice == 'enemy':
                     self.root.contents[0]=room_setup(self.root).enemy_generation()
                     self.encounter_on_screen_load(player_char)
-                    exploration_logic().combat_end(self.root, player_char)
+                    self.logic.combat_end(self.root, player_char)
 
                 elif choice == 'reward':
                     self.root.contents[1]=room_setup(self.root).loot_generation()
-                    exploration_logic().combat_end(self.root, player_char)
+                    self.logic.combat_end(self.root, player_char)
+            if self.root.node_type == 'reward':
+                self.root.contents[1]=room_setup(self.root).loot_generation()
+                self.logic.combat_end(self.root, player_char)
 
-            self.tree.explored_room_count += 1
             if self.root.data != 1: 
                 self.root.node_type = "already_explored"
-            exploration_logic(player_char.hp).check_for_EOE(self.tree, player_char)
+                if self.root.node_type != 'already_explored':
+                    self.tree.explored_room_count += 1
+            self.logic.check_for_EOE(self.tree, player_char)
             pygame.display.flip()

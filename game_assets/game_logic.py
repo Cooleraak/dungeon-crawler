@@ -4,15 +4,11 @@ from game_assets.enemy_assets import *
 from game_assets.player import *
 from game_assets.map_contents_gen import *
 
-#add boss encounter scenario -> multiple enemy turns, enhanced attacks/passives
-
 class exploration_logic():
     #general functions for exploration
-    def __init__(self, player_hp = None):
+    def __init__(self):
         self.goal = self.set_completion_goal()
-        self.player_hp = player_hp
         
-
     def set_completion_goal(self):
         possible_goals = {
             'explore' : False,
@@ -22,37 +18,44 @@ class exploration_logic():
         goal = random.choice(list(possible_goals.keys()))
         return [goal, possible_goals[goal]]
 
-    def progress_tracker(self):
-        pass
-
     def check_for_EOE(self, tree, player):
-        if self.player_hp <= 0:
+        if player.hp <= 0:
             print('you lose')
             exit()
 
-        self.goal[1] = self.update_exploration_status(tree)
-        if self.goal[1] == True:
+        if self.update_exploration_status(tree) == True:
             print('goal complete!')
             save_data(player)
             exit()
 
     def update_exploration_status(self, tree):
-        if self.goal == 'explore':
-            if (100*tree.explored_room_count//tree.total_room_count) >= 85:
+        if self.goal[0] == 'explore':
+            print('goal explore')
+            if (100*tree.explored_room_count)//tree.total_room_count >= 85:
+                print('goal complete!')
+                exit()
                 return True
-        elif self.goal == 'execute':
-            if tree.enemy_count == 0:
+        elif self.goal[0] == 'execute':
+            print('goal execute')
+            if tree.enemy_count <= 0:
+                print('goal complete!')
+                exit()
                 return True
         else:
+            print('goal boss')
             if tree.enemy_count == -1:
+                print('goal complete!')
+                exit()
                 return True
+        print('unfinished business')
         return False
 
     def combat_end(self,node,player):
-        chest = room_setup(node).loot_generation().chest_loot
+        chest = room_setup(node).loot_generation()
         player.inventory += chest
         player.curr_xp += 20
         player.update_xp()
+        player.mp = 100
 
 
 class encounter_logic():
@@ -69,12 +72,10 @@ class encounter_logic():
             self.make_move(self.enemy_char, enemy_move)
             
         enemy_move = self.best_move(False)
-
         self.make_move(self.enemy_char, enemy_move)
  
         if self.check_for_EOC():
             return [False, self.enemy_char, self.player_char]
-
         return [True, self.enemy_char, self.player_char]
 
 
@@ -103,7 +104,6 @@ class encounter_logic():
             actor.hp += regen_val
         else:
             actor.hp = actor.max_hp
-        
         #passive dmg reduction if elusive
         elusive_reduction = 3 if 'elusive' in defender.passives else 0
 
@@ -114,20 +114,20 @@ class encounter_logic():
             actor.mp -= mp_cost
 
             damage = self.calculalte_dmg(actor, move)
-
             if damage == False:
                 #punish for insufficient mana; -1 for computer eval
-                actor.mp = -1
-                
+                if actor.type == 'PLAYER':
+                    actor.mp = -1
+                else:
+                    actor.hp -= 99999999   
             else:
                 defender.hp -= damage - elusive_reduction*moveset['elusive']
-        
         return self.player_char, self.enemy_char
 
     def best_move(self, first_action_of_round):
         player_copy = deepcopy(self.player_char)
         enemy_copy = deepcopy(self.enemy_char)
-        best_score = -9999999
+        best_score = -100
         best_move = 'pass'
 
         for move in self.enemy_char.actions:
@@ -140,7 +140,6 @@ class encounter_logic():
                 best_score = score
                 best_move = move
         print(f'used {best_move}')
-        
         return best_move
 
     def calculalte_dmg(self, actor, move):
@@ -156,9 +155,8 @@ class encounter_logic():
         score = self.calculate_score()
         if self.check_for_EOC():
             return score
-        if curr_depth < 0:
+        if curr_depth <= 0:
             return score
-
         #enables bosses to attack twice in a row
         if self.enemy_char.name in enemy_tiers().boss_enemy_list:
             enemy_turn = True if first_action_of_round == True else False
@@ -168,7 +166,7 @@ class encounter_logic():
         enemy_copy = deepcopy(self.enemy_char.__dict__)
 
         if enemy_turn:
-            max_score = -9999999
+            max_score = -100
             for move in self.enemy_char.actions:
                 self.make_move(self.enemy_char, move)
                 score = self.minimax(curr_depth - 1, False, first_action_of_round)
@@ -177,7 +175,7 @@ class encounter_logic():
                     max_score = score
             return max_score
         else:
-            min_score = 9999999
+            min_score = 100
             for move in self.player_char.actions:
                 self.make_move(self.player_char, move)
                 score = self.minimax(curr_depth - 1, True, first_action_of_round)
@@ -192,14 +190,16 @@ class encounter_logic():
             mana_var = 0
         else:
             mana_var = 1
-        if self.player_char.hp < 1:
-            return 9999999
-        elif self.enemy_char.hp < 1:
-            return -9999999
+        if self.player_char.mp < 0:
+            mana_var_player = 0
         else:
-            enemy_hp_percent = (self.enemy_char.hp*100)//self.enemy_char.max_hp
-            player_hp_percent = (self.player_char.hp*100)//self.player_char.max_hp
-            return mana_var*enemy_hp_percent - player_hp_percent
+            mana_var_player = 1
+        if self.player_char.hp < 1:
+            return 100
+        
+        enemy_hp_percent = (self.enemy_char.hp*100)//self.enemy_char.max_hp
+        player_hp_percent = (self.player_char.hp*100)//self.player_char.max_hp
+        return mana_var*enemy_hp_percent - mana_var_player*player_hp_percent
 
     def check_for_EOC(self):
         #checks for EndOfCombat
