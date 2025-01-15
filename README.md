@@ -25,4 +25,6 @@ When ready to play, just open `menu.py`.
 
 This game was created during the winter semester of 2024/25 as part of my studies at Charles University, as a credit program for Programming I.
 
-For more information, check [program manual](https://github.com/Cooleraak/dungeon-crawler/blob/main/docs/program_manual.md)
+For gameplay information, check [user manual](https://github.com/Cooleraak/dungeon-crawler/blob/main/docs/user_manual.md)
+
+For more technical information, check [program manual](https://github.com/Cooleraak/dungeon-crawler/blob/main/docs/program_manual.md)
