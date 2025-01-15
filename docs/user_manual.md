@@ -9,7 +9,8 @@
 ## How to Play
 
 After opening `menu.py`, a menu will open. 
-<img src="" alt="legendary dungeon" width="300" height="300"/>
+
+<img src="https://github.com/Cooleraak/dungeon-crawler/blob/main/docs/images/menu_screen.png" alt="legendary dungeon" width="300" height="300"/>
 
 ---
 
@@ -116,7 +117,7 @@ While in a fight, the combat buttons become available:
  - `ITEM` - recover `health` based on level; does NOT cost a turn
  - `MANA` - recover 50 `mana`; costs a turn
 
-<img src="" alt="combat screen" width="300" height="300"/>
+<img src="https://github.com/Cooleraak/dungeon-crawler/blob/main/docs/images/fight_screen.png" alt="combat screen" width="300" height="300"/>
 
 ## Goals
 
@@ -128,7 +129,7 @@ The goals are:
 
 Your current goal as well as a tracker and combat log will show up in the terminal log
 
-<img src="" alt="status log" width="300" height="300"/>
+<img src="https://github.com/Cooleraak/dungeon-crawler/blob/main/docs/images/status.png" alt="status log" width="300" height="300"/>
 
 After completing the set goal, a message will pop up in the terminal log and the game will close, needing to be reopened again for another round.
 
