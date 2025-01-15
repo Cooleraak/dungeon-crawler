@@ -148,11 +148,11 @@ class game():
             curr_buttons = self.exploration_buttons
             running = True
             destination = None
+            print('----------------------------------')
+            print('explored',self.tree.explored_room_count, ':', 'total',self.tree.total_room_count)
+            print('needed enemies ',self.tree.enemy_count)
+            print('----------------------------------')
             while running:
-                print('----------------------------------')
-                print('explored',self.tree.explored_room_count, ':', 'total',self.tree.total_room_count)
-                print('needed enemies ',self.tree.enemy_count)
-                print('----------------------------------')
                 #bg image load
                 self.screen.blit(self.background_image, (0, 0))
     
