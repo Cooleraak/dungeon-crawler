@@ -235,4 +235,8 @@ class game():
                 if self.root.node_type != 'already_explored':
                     self.tree.explored_room_count += 1
             self.logic.check_for_EOE(self.tree, player_char)
+<<<<<<< HEAD
             pygame.display.flip()
+=======
+            pygame.display.flip()
+>>>>>>> 399e69fbd8ec1df89cbae4aa9e27215b52a2ae67
