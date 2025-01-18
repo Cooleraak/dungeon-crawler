@@ -226,6 +226,7 @@ class game():
                 elif choice == 'reward':
                     self.root.contents[1]=room_setup(self.root).loot_generation()
                     self.logic.combat_end(self.root, player_char)
+
             if self.root.node_type == 'reward':
                 self.root.contents[1]=room_setup(self.root).loot_generation()
                 self.logic.combat_end(self.root, player_char)
@@ -234,9 +235,5 @@ class game():
                 self.root.node_type = "already_explored"
                 if self.root.node_type != 'already_explored':
                     self.tree.explored_room_count += 1
-            self.logic.check_for_EOE(self.tree, player_char)
-<<<<<<< HEAD
-            pygame.display.flip()
-=======
-            pygame.display.flip()
->>>>>>> 399e69fbd8ec1df89cbae4aa9e27215b52a2ae67
+            self.logic.check_for_EOE(self.tree,player_char)
+
